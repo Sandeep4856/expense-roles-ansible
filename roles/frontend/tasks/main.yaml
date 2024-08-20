@@ -10,21 +10,30 @@
       state: started
       enabled: yes
 
-  - name: delete default website
-    ansible.builtin.file:
-      path: /usr/share/nginx/html
-      state: absent
+  # - name: delete default website
+  #   ansible.builtin.file:
+  #     path: /usr/share/nginx/html
+  #     state: absent
 
-  - name: create html directory
-    ansible.builtin.file:
-      path: /usr/share/nginx/html
-      state: directory
+  # - name: create html directory
+  #   ansible.builtin.file:
+  #     path: /usr/share/nginx/html
+  #     state: directory
 
-  - name: download and extract frontend code
-    ansible.builtin.unarchive:
-      src: https://expense-builds.s3.us-east-1.amazonaws.com/expense-frontend-v2.zip
-      dest: /usr/share/nginx/html
-      remote_src: yes
+  # - name: download and extract frontend code
+  #   ansible.builtin.unarchive:
+  #     src: https://expense-builds.s3.us-east-1.amazonaws.com/expense-frontend-v2.zip
+  #     dest: /usr/share/nginx/html
+  #     remote_src: yes
+
+
+# rather than writing all theses 3:  delete default website / create html directory / Download and extract frontend code i've shortend the code in just one task as run app pre-requisites
+
+  - name: run app pre-requisites
+    ansible.builtin.import_role:
+    name: common
+    tasks_from: app-pre-req
+
 
   - name: copy backend conf
     ansible.builtin.template:
