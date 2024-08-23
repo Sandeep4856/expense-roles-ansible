@@ -1,0 +1,36 @@
+
+- name: Create EC2 and Route 53 records
+  hosts: localhost
+  vars:
+    zone: dharla.online
+    instances:
+      - db
+      - backend
+      - frontend
+  tasks:
+    - name: Create EC2 instances
+      amazon.aws.ec2_instance:
+        instance_type: t2.micro
+        name: "{{ item }}"
+        security_groups:  # Change this to your actual security group ID
+          - sg-042ad1e82e90ec91b  # Replace with a valid security group ID
+        image_id: ami-041e2ea9402c46c32
+        tags:
+          Name: "{{ item }}"
+      loop: "{{ instances }}"
+      register: ec2_instances_info
+
+    - name: Print EC2 instance information
+      ansible.builtin.debug:
+        msg: "{{ ec2_instances_info }}"
+
+    - name: Create Route 53 records
+      amazon.aws.route53:
+        state: present
+        zone: "{{ zone }}"
+        record: "{{ item.instance.tags.Name }}.{{ zone }}"
+        type: A
+        value: "{{ item.private_ip_address }}"
+        overwrite: true
+        ttl: 1
+      loop: "{{ ec2_instances_info.instances }}"
