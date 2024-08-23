@@ -35,3 +35,8 @@
       loop: "{{ ec2_instances_info.instances }}"
       loop_control:
         loop_var: item
+
+    - name: Debug EC2 Instances Info
+      ansible.builtin.debug:
+        var: ec2_instances_info
+
