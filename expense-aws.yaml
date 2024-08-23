@@ -1,4 +1,3 @@
-
 - name: Create EC2 and Route 53 records
   hosts: localhost
   vars:
@@ -12,8 +11,8 @@
       amazon.aws.ec2_instance:
         instance_type: t2.micro
         name: "{{ item }}"
-        security_groups:  # Change this to your actual security group ID
-          - sg-042ad1e82e90ec91b  # Replace with a valid security group ID
+        security_groups:
+          - sg-042ad1e82e90ec91b
         image_id: ami-041e2ea9402c46c32
         tags:
           Name: "{{ item }}"
@@ -28,9 +27,11 @@
       amazon.aws.route53:
         state: present
         zone: "{{ zone }}"
-        record: "{{ item.instance.tags.Name }}.{{ zone }}"
+        record: "{{ item.tags.Name }}.{{ zone }}"
         type: A
-        value: "{{ item.private_ip_address }}"
+        value: "{{ item.private_ip }}"
         overwrite: true
         ttl: 1
       loop: "{{ ec2_instances_info.instances }}"
+      loop_control:
+        loop_var: item
