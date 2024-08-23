@@ -19,10 +19,6 @@
       loop: "{{ instances }}"
       register: ec2_instances_info
 
-    - name: Print EC2 instance information
-      ansible.builtin.debug:
-        msg: "{{ ec2_instances_info }}"
-
     - name: Create Route 53 records
       amazon.aws.route53:
         state: present
@@ -32,11 +28,6 @@
         value: "{{ item.private_ip }}"
         overwrite: true
         ttl: 1
-      loop: "{{ ec2_instances_info.instances }}"
+      loop: "{{ ec2_instances_info.results }}"
       loop_control:
         loop_var: item
-
-    - name: Debug EC2 Instances Info
-      ansible.builtin.debug:
-        var: ec2_instances_info
-
