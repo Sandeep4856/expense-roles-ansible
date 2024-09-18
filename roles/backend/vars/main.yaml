@@ -1,5 +1,5 @@
 login_user: root
-login_password: ExpenseApp1  # previously i used ExpenseApp1
+login_password: ExpenseApp@1  # previously i used ExpenseApp1
 login_host: db.dharla.online
 DB_HOST: db.dharla.online
 app_location: /app
